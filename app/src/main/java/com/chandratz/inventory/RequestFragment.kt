@@ -7,11 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.chandratz.inventory.databinding.FragmentRequestBinding
 import com.chandratz.inventory.model.OrderData
 import com.chandratz.inventory.model.OrderResponse
 import com.chandratz.myfirstapplication.api.RetrofitClient
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +32,17 @@ class RequestFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val fabAddRequest = view.findViewById<FloatingActionButton>(R.id.fabAddRequest)
+        fabAddRequest.setOnClickListener {
+            val dialog = RequestProductDialogFragment()
+            dialog.setOnDismissListener {
+                // Refresh data setiap kali dialog ditutup
+                fetchDataRequestProducts()
+            }
+            dialog.show(parentFragmentManager, "RequestProductDialogFragment")
+        }
+
         setupListView()
         fetchDataRequestProducts()
     }
@@ -41,7 +52,7 @@ class RequestFragment : Fragment() {
         binding.requestListView.adapter = adapter
     }
 
-    private fun fetchDataRequestProducts() {
+    fun fetchDataRequestProducts() {
         val apiService = RetrofitClient.instance
 
         // Ambil token dari SharedPreferences

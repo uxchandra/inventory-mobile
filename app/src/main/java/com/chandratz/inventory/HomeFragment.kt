@@ -1,6 +1,7 @@
 package com.chandratz.inventory
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -37,12 +38,46 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Set OnClickListener pada CircleImageView
+        binding.photoImageView.setOnClickListener {
+            toggleLogoutCardVisibility()
+        }
+
+        // Set OnClickListener untuk button logout
+        binding.logoutButton.setOnClickListener {
+            logout()
+        }
+
         fetchDashboardData()
+    }
+
+    // Fungsi untuk mengontrol visibilitas CardView logout
+    private fun toggleLogoutCardVisibility() {
+        val logoutCard = binding.logoutCard
+        if (logoutCard.visibility == View.GONE) {
+            logoutCard.visibility = View.VISIBLE
+        } else {
+            logoutCard.visibility = View.GONE
+        }
+    }
+
+    // Fungsi untuk logout
+    private fun logout() {
+        // Menghapus token dari SharedPreferences
+        val sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.remove("auth_token")  // Menghapus token
+        editor.apply()
+
+        // Mengarahkan pengguna ke halaman login
+        val loginIntent = Intent(activity, MainActivity::class.java)
+        startActivity(loginIntent)
+        requireActivity().finish()
     }
 
     private fun fetchDashboardData() {
         val apiService = RetrofitClient.instance
-
         val sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("auth_token", null)
 
@@ -54,28 +89,16 @@ class HomeFragment : Fragment() {
                     call: Call<DashboardResponse>,
                     response: Response<DashboardResponse>
                 ) {
-                    // Log respons mentah sebelum parsing
-                    Log.d("Dashboard", "Raw response: ${response.raw().message}")
-
                     if (response.isSuccessful) {
                         response.body()?.let { dashboardResponse ->
                             val dashboardData = dashboardResponse.data
-
                             binding.tvJumlahPermintaan.text = dashboardData?.jumlahPermintaan.toString()
-
-                            if (dashboardData != null) {
-                                setupPieChart(dashboardData.barangPalingBanyakDiminta)
+                            dashboardData?.let {
+                                setupPieChart(it.barangPalingBanyakDiminta)
                             }
-
-                            Log.d("Dashboard", "Data received: $dashboardData")
-                        } ?: run {
-                            Log.e("Dashboard", "Response body is null")
                         }
                     } else {
                         Log.e("Dashboard", "Response not successful: ${response.code()}")
-                        response.errorBody()?.let { errorBody ->
-                            Log.d("Dashboard", "Error response: ${errorBody.string()}")
-                        }
                     }
                 }
 
@@ -83,16 +106,11 @@ class HomeFragment : Fragment() {
                     Log.e("Dashboard", "API call failed", t)
                 }
             })
-        } else {
-            Log.e("Dashboard", "Token is null")
         }
     }
 
-
     private fun setupPieChart(barangData: List<BarangData>) {
         val entries = ArrayList<PieEntry>()
-
-        // Menghitung total dari semua barang untuk perhitungan persen
         val total = barangData.sumBy { it.total }
 
         for (barang in barangData) {
@@ -130,3 +148,5 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 }
+
+

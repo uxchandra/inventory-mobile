@@ -31,7 +31,7 @@ class RequestAdapter(private val context: Context, private var orderList: List<O
 
             when (it.status) {
                 "menunggu_konfirmasi" -> textStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow))
-                "diterima" -> textStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.green))
+                "disetujui" -> textStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.primary))
                 "ditolak" -> textStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.red))
                 "selesai" -> textStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.blue))
                 else -> textStatus.setBackgroundColor(ContextCompat.getColor(context, R.color.gray))
@@ -42,9 +42,8 @@ class RequestAdapter(private val context: Context, private var orderList: List<O
     }
 
     fun updateData(newOrderList: List<OrderData>) {
-        orderList = newOrderList
         clear()
-        addAll(orderList)
+        addAll(newOrderList)
         notifyDataSetChanged()
     }
 }

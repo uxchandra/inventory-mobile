@@ -49,6 +49,8 @@ dependencies {
     annotationProcessor (libs.glide.compiler)
     implementation (libs.mpandroidchart)
     implementation (libs.androidx.cardview)
+    implementation (libs.kotlinx.coroutines.android)
+    implementation (libs.eventbus)
 
     implementation (libs.recyclerview)
 
@@ -66,4 +68,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(kotlin("script-runtime"))
 }

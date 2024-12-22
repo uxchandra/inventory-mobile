@@ -14,7 +14,8 @@
         android:label="Home" />
 
     <fragment
-        android:id="@+id/navigation_settings"
+        android:id="@+id/navigation_report"
+        android:name="com.chandratz.inventory.ReportFragment"
         android:label="Home" />
 
 </navigation>

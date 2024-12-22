@@ -25,8 +25,8 @@
         android:id="@+id/ivLoginImage"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/warehouse"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvLoginTitle" />
